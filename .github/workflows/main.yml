@@ -16,7 +16,8 @@ jobs:
       with:
         username: cs3238-tsuzu
         password: ${{ secrets.GITHUB_TOKEN }}
-        repository: docker.pkg.github.com/cs3238-tsuzu/ghapp-controller/controller
+        registry: docker.pkg.github.com
+        repository: cs3238-tsuzu/ghapp-controller/controller
         dockerfile: Dockerfile
         tag_with_ref: true
         tag_with_sha: true
