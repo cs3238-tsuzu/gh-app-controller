@@ -26,6 +26,8 @@ import (
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
+
+	ghappv1alpha1 "github.com/cs3238-tsuzu/ghapp-controller/api/v1alpha1"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -37,6 +39,7 @@ var (
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 
+	utilruntime.Must(ghappv1alpha1.AddToScheme(scheme))
 	// +kubebuilder:scaffold:scheme
 }
 

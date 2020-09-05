@@ -1,0 +1,20 @@
+# permissions for end users to view clustergithubapps.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: clustergithubapp-viewer-role
+rules:
+- apiGroups:
+  - ghapp.tsuzu.dev
+  resources:
+  - clustergithubapps
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ghapp.tsuzu.dev
+  resources:
+  - clustergithubapps/status
+  verbs:
+  - get
