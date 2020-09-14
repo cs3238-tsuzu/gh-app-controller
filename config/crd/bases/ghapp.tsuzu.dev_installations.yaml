@@ -1,0 +1,223 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.3.0
+  creationTimestamp: null
+  name: installations.ghapp.tsuzu.dev
+spec:
+  group: ghapp.tsuzu.dev
+  names:
+    kind: Installation
+    listKind: InstallationList
+    plural: installations
+    singular: installation
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: Installation is the Schema for the installations API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: InstallationSpec defines the desired state of GitHub installation
+            properties:
+              appRef:
+                description: AppRef is a reference to ClusterGitHubApp or GitHubApp
+                properties:
+                  apiVersion:
+                    description: API version of the referent.
+                    type: string
+                  fieldPath:
+                    description: 'If referring to a piece of an object instead of
+                      an entire object, this string should contain a valid JSON/Go
+                      field access statement, such as desiredState.manifest.containers[2].
+                      For example, if the object reference is to a container within
+                      a pod, this would take on a value like: "spec.containers{name}"
+                      (where "name" refers to the name of the container that triggered
+                      the event) or if no container name is specified "spec.containers[2]"
+                      (container with index 2 in this pod). This syntax is chosen
+                      only to have some well-defined way of referencing a part of
+                      an object. TODO: this design is not final and this field is
+                      subject to change in the future.'
+                    type: string
+                  kind:
+                    description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                    type: string
+                  name:
+                    description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                    type: string
+                  namespace:
+                    description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                    type: string
+                  resourceVersion:
+                    description: 'Specific resourceVersion to which this reference
+                      is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                    type: string
+                  uid:
+                    description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                    type: string
+                type: object
+              installationPermissions:
+                description: InstallationPermissions are used to restrict permissions
+                  for tokens
+                properties:
+                  administration:
+                    type: string
+                  blocking:
+                    type: string
+                  checks:
+                    type: string
+                  content_references:
+                    type: string
+                  contents:
+                    type: string
+                  deployments:
+                    type: string
+                  emails:
+                    type: string
+                  followers:
+                    type: string
+                  issues:
+                    type: string
+                  members:
+                    type: string
+                  metadata:
+                    type: string
+                  organization_administration:
+                    type: string
+                  organization_hooks:
+                    type: string
+                  organization_plan:
+                    type: string
+                  organization_pre_receive_hooks:
+                    type: string
+                  organization_projects:
+                    type: string
+                  organization_user_blocking:
+                    type: string
+                  packages:
+                    type: string
+                  pages:
+                    type: string
+                  pull_requests:
+                    type: string
+                  repository_hooks:
+                    type: string
+                  repository_pre_receive_hooks:
+                    type: string
+                  repository_projects:
+                    type: string
+                  single_file:
+                    type: string
+                  statuses:
+                    type: string
+                  team_discussions:
+                    type: string
+                  vulnerability_alerts:
+                    type: string
+                type: object
+              key:
+                description: Key is the key in the secret to save the token
+                type: string
+              repositoryIDs:
+                description: RepositoryIDS are used to restrict permissions for tokens
+                items:
+                  type: string
+                type: array
+              template:
+                description: Template is the template to generate secret with the
+                  installation token
+                properties:
+                  apiVersion:
+                    description: 'APIVersion defines the versioned schema of this
+                      representation of an object. Servers should convert recognized
+                      schemas to the latest internal value, and may reject unrecognized
+                      values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+                    type: string
+                  data:
+                    additionalProperties:
+                      format: byte
+                      type: string
+                    description: Data contains the secret data. Each key must consist
+                      of alphanumeric characters, '-', '_' or '.'. The serialized
+                      form of the secret data is a base64 encoded string, representing
+                      the arbitrary (possibly non-string) data value here. Described
+                      in https://tools.ietf.org/html/rfc4648#section-4
+                    type: object
+                  immutable:
+                    description: Immutable, if set to true, ensures that data stored
+                      in the Secret cannot be updated (only object metadata can be
+                      modified). If not set to true, the field can be modified at
+                      any time. Defaulted to nil. This is an alpha field enabled by
+                      ImmutableEphemeralVolumes feature gate.
+                    type: boolean
+                  kind:
+                    description: 'Kind is a string value representing the REST resource
+                      this object represents. Servers may infer this from the endpoint
+                      the client submits requests to. Cannot be updated. In CamelCase.
+                      More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                    type: string
+                  metadata:
+                    description: 'Standard object''s metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata'
+                    type: object
+                  stringData:
+                    additionalProperties:
+                      type: string
+                    description: stringData allows specifying non-binary secret data
+                      in string form. It is provided as a write-only convenience method.
+                      All keys and values are merged into the data field on write,
+                      overwriting any existing values. It is never output when reading
+                      from the API.
+                    type: object
+                  type:
+                    description: Used to facilitate programmatic handling of secret
+                      data.
+                    type: string
+                type: object
+            required:
+            - appRef
+            - key
+            - template
+            type: object
+          status:
+            description: InstallationStatus defines the observed state of Installation
+            properties:
+              bool:
+                description: Ready is the status of the installation token
+                type: boolean
+              message:
+                description: Message is the error message if something failed
+                type: string
+              secret:
+                description: Secret is the secret name to save the installation token
+                type: string
+            required:
+            - bool
+            - secret
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
