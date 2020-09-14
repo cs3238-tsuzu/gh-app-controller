@@ -36,10 +36,24 @@ spec:
         spec:
           description: ClusterGitHubAppSpec defines the desired state of ClusterGitHubApp
           properties:
-            foo:
-              description: Foo is an example field of ClusterGitHubApp. Edit ClusterGitHubApp_types.go
-                to remove/update
+            appID:
               type: string
+            privateKeySecretRef:
+              properties:
+                key:
+                  type: string
+                name:
+                  type: string
+              required:
+              - key
+              - name
+              type: object
+            url:
+              type: string
+          required:
+          - appID
+          - privateKeySecretRef
+          - url
           type: object
         status:
           description: ClusterGitHubAppStatus defines the observed state of ClusterGitHubApp
