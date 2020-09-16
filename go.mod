@@ -1,4 +1,4 @@
-module github.com/cs3238-tsuzu/ghapp-controller
+module github.com/modoki-paas/ghapp-controller
 
 go 1.13
 

@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/cs3238-tsuzu/ghapp-controller/api/v1alpha1"
-	"github.com/cs3238-tsuzu/ghapp-controller/pkg/appstransport"
-	"github.com/cs3238-tsuzu/ghapp-controller/pkg/ghatypes"
 	"github.com/google/go-github/v30/github"
+	"github.com/modoki-paas/ghapp-controller/api/v1alpha1"
+	"github.com/modoki-paas/ghapp-controller/pkg/appstransport"
+	"github.com/modoki-paas/ghapp-controller/pkg/ghatypes"
 	"golang.org/x/xerrors"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"

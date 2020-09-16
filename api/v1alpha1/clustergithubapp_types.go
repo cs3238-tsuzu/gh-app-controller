@@ -1,5 +1,5 @@
 /*
-Copyright 2020 cs3238-tsuzu.
+Copyright 2020 modoki-paas.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import (
 	"context"
 	"os"
 
-	"github.com/cs3238-tsuzu/ghapp-controller/pkg/ghatypes"
+	"github.com/modoki-paas/ghapp-controller/pkg/ghatypes"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

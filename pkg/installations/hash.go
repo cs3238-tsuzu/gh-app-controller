@@ -6,8 +6,8 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/cs3238-tsuzu/ghapp-controller/api/v1alpha1"
-	"github.com/cs3238-tsuzu/ghapp-controller/pkg/ghatypes"
+	"github.com/modoki-paas/ghapp-controller/api/v1alpha1"
+	"github.com/modoki-paas/ghapp-controller/pkg/ghatypes"
 	corev1 "k8s.io/api/core/v1"
 )
 

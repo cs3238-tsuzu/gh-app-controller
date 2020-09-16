@@ -14,10 +14,10 @@ jobs:
     - name: Build Docker image
       uses: docker/build-push-action@v1
       with:
-        username: cs3238-tsuzu
+        username: modoki-paas
         password: ${{ secrets.GITHUB_TOKEN }}
         registry: docker.pkg.github.com
-        repository: cs3238-tsuzu/ghapp-controller/controller
+        repository: modoki-paas/ghapp-controller/controller
         dockerfile: Dockerfile
         tag_with_ref: true
         tag_with_sha: true

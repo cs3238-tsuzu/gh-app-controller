@@ -1,7 +1,7 @@
 domain: tsuzu.dev
 layout: go.kubebuilder.io/v2
 projectName: ghapp-controller
-repo: github.com/cs3238-tsuzu/ghapp-controller
+repo: github.com/modoki-paas/ghapp-controller
 resources:
 - group: ghapp
   kind: ClusterGitHubApp

@@ -1,5 +1,5 @@
 /*
-Copyright 2020 cs3238-tsuzu.
+Copyright 2020 modoki-paas.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -28,8 +28,8 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	ghappv1alpha1 "github.com/cs3238-tsuzu/ghapp-controller/api/v1alpha1"
-	"github.com/cs3238-tsuzu/ghapp-controller/controllers"
+	ghappv1alpha1 "github.com/modoki-paas/ghapp-controller/api/v1alpha1"
+	"github.com/modoki-paas/ghapp-controller/controllers"
 	// +kubebuilder:scaffold:imports
 )
 
