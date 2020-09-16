@@ -14,7 +14,7 @@ jobs:
     - name: Prepare
       id: prep
       run: |
-        DOCKER_IMAGE=docker.pkg.github.comuser/modoki-paas/ghapp-controller/controller
+        DOCKER_IMAGE=docker.pkg.github.com/modoki-paas/ghapp-controller/controller
         VERSION=noop
         if [ "${{ github.event_name }}" = "schedule" ]; then
           VERSION=nightly
