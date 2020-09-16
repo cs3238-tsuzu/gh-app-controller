@@ -61,3 +61,5 @@ jobs:
           file: ./Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.prep.outputs.tags }}
+          secrets: |
+            GIT_AUTH_TOKEN=${{ github.token }}
