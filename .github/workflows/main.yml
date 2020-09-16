@@ -16,7 +16,7 @@ jobs:
       with:
         username: modoki-paas
         password: ${{ secrets.GITHUB_TOKEN }}
-        registry: docker.pkg.github.com
+        registry: ghcr.io
         repository: modoki-paas/ghapp-controller/controller
         dockerfile: Dockerfile
         tag_with_ref: true
