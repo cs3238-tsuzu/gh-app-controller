@@ -327,13 +327,13 @@ func (in *InstallationPermissions) DeepCopy() *InstallationPermissions {
 func (in *InstallationSpec) DeepCopyInto(out *InstallationSpec) {
 	*out = *in
 	out.AppRef = in.AppRef
-	if in.RepositoryIDS != nil {
-		in, out := &in.RepositoryIDS, &out.RepositoryIDS
-		*out = make([]string, len(*in))
+	if in.RepositoryIDs != nil {
+		in, out := &in.RepositoryIDs, &out.RepositoryIDs
+		*out = make([]int64, len(*in))
 		copy(*out, *in)
 	}
-	if in.InstallationPermissions != nil {
-		in, out := &in.InstallationPermissions, &out.InstallationPermissions
+	if in.Permissions != nil {
+		in, out := &in.Permissions, &out.Permissions
 		*out = new(InstallationPermissions)
 		(*in).DeepCopyInto(*out)
 	}

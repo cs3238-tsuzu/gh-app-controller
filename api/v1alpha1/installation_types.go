@@ -17,6 +17,7 @@ limitations under the License.
 package v1alpha1
 
 import (
+	"github.com/google/go-github/v30/github"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -55,6 +56,43 @@ type InstallationPermissions struct {
 	VulnerabilityAlerts         *string `json:"vulnerability_alerts,omitempty"`
 }
 
+// GetGitHubPermissions returns github.InstallationPermissions converted from InstallationPermissions
+func (p *InstallationPermissions) GetGitHubPermissions() *github.InstallationPermissions {
+	if p == nil {
+		return nil
+	}
+
+	return &github.InstallationPermissions{
+		Administration:              p.Administration,
+		Blocking:                    p.Blocking,
+		Checks:                      p.Checks,
+		Contents:                    p.Contents,
+		ContentReferences:           p.ContentReferences,
+		Deployments:                 p.Deployments,
+		Emails:                      p.Emails,
+		Followers:                   p.Followers,
+		Issues:                      p.Issues,
+		Metadata:                    p.Metadata,
+		Members:                     p.Members,
+		OrganizationAdministration:  p.OrganizationAdministration,
+		OrganizationHooks:           p.OrganizationHooks,
+		OrganizationPlan:            p.OrganizationPlan,
+		OrganizationPreReceiveHooks: p.OrganizationPreReceiveHooks,
+		OrganizationProjects:        p.OrganizationProjects,
+		OrganizationUserBlocking:    p.OrganizationUserBlocking,
+		Packages:                    p.Packages,
+		Pages:                       p.Pages,
+		PullRequests:                p.PullRequests,
+		RepositoryHooks:             p.RepositoryHooks,
+		RepositoryProjects:          p.RepositoryProjects,
+		RepositoryPreReceiveHooks:   p.RepositoryPreReceiveHooks,
+		SingleFile:                  p.SingleFile,
+		Statuses:                    p.Statuses,
+		TeamDiscussions:             p.TeamDiscussions,
+		VulnerabilityAlerts:         p.VulnerabilityAlerts,
+	}
+}
+
 // InstallationSpec defines the desired state of GitHub installation
 type InstallationSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
@@ -63,13 +101,16 @@ type InstallationSpec struct {
 	// AppRef is a reference to ClusterGitHubApp or GitHubApp
 	AppRef corev1.ObjectReference `json:"appRef"`
 
+	// InstallationID is an installation id for GitHub App
+	InstallationID int64 `json:"installationID"`
+
 	// RepositoryIDS are used to restrict permissions for tokens
 	// +kubebuilder:validation:Optional
-	RepositoryIDS []string `json:"repositoryIDs,omitempty"`
+	RepositoryIDs []int64 `json:"repositoryIDs,omitempty"`
 
-	// InstallationPermissions are used to restrict permissions for tokens
+	// Permissions are used to restrict permissions for tokens
 	// +kubebuilder:validation:Optional
-	InstallationPermissions *InstallationPermissions `json:"installationPermissions"`
+	Permissions *InstallationPermissions `json:"permissions"`
 
 	// Key is the key in the secret to save the token
 	Key string `json:"key"`

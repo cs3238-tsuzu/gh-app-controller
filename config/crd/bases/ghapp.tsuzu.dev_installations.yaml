@@ -72,9 +72,15 @@ spec:
                     description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
                     type: string
                 type: object
-              installationPermissions:
-                description: InstallationPermissions are used to restrict permissions
-                  for tokens
+              installationID:
+                description: InstallationID is an installation id for GitHub App
+                format: int64
+                type: integer
+              key:
+                description: Key is the key in the secret to save the token
+                type: string
+              permissions:
+                description: Permissions are used to restrict permissions for tokens
                 properties:
                   administration:
                     type: string
@@ -131,13 +137,11 @@ spec:
                   vulnerability_alerts:
                     type: string
                 type: object
-              key:
-                description: Key is the key in the secret to save the token
-                type: string
               repositoryIDs:
                 description: RepositoryIDS are used to restrict permissions for tokens
                 items:
-                  type: string
+                  format: int64
+                  type: integer
                 type: array
               template:
                 description: Template is the template to generate secret with the
@@ -191,6 +195,7 @@ spec:
                 type: object
             required:
             - appRef
+            - installationID
             - key
             - template
             type: object

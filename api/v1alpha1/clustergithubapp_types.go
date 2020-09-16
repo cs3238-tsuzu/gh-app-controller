@@ -17,7 +17,14 @@ limitations under the License.
 package v1alpha1
 
 import (
+	"context"
+	"os"
+
+	"github.com/cs3238-tsuzu/ghapp-controller/pkg/ghatypes"
+	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
@@ -34,7 +41,7 @@ type ClusterGitHubAppSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	URL                 string              `json:"url"`
-	AppID               string              `json:"appID"`
+	AppID               int64               `json:"appID"`
 	PrivateKeySecretRef PrivateKeySecretRef `json:"privateKeySecretRef"`
 }
 
@@ -68,4 +75,39 @@ type ClusterGitHubAppList struct {
 
 func init() {
 	SchemeBuilder.Register(&ClusterGitHubApp{}, &ClusterGitHubAppList{})
+}
+
+var _ ghatypes.GitHubAppInterface = &ClusterGitHubApp{}
+
+func (a *ClusterGitHubApp) GetURL() string {
+	return a.Spec.URL
+}
+
+func (a *ClusterGitHubApp) GetAppID() int64 {
+	return a.Spec.AppID
+}
+
+func (a *ClusterGitHubApp) GetPrivateKey(ctx context.Context, c client.Client) ([]byte, error) {
+	secret := &corev1.Secret{}
+
+	err := c.Get(ctx, client.ObjectKey{
+		Name:      a.Spec.PrivateKeySecretRef.Name,
+		Namespace: os.Getenv("CONTROLLER_NAMESPACE"),
+	}, secret)
+
+	if errors.IsNotFound(err) {
+		return nil, ghatypes.ErrSecretNotFound
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	data, ok := secret.Data[a.Spec.PrivateKeySecretRef.Key]
+
+	if !ok {
+		return nil, ghatypes.ErrKeyNotFound
+	}
+
+	return data, nil
 }

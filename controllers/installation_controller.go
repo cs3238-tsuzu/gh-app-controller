@@ -18,32 +18,97 @@ package controllers
 
 import (
 	"context"
+	"time"
 
 	"github.com/go-logr/logr"
+	"golang.org/x/xerrors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	ghappv1alpha1 "github.com/cs3238-tsuzu/ghapp-controller/api/v1alpha1"
+	"github.com/cs3238-tsuzu/ghapp-controller/pkg/installations"
 )
 
 // InstallationReconciler reconciles a Installation object
 type InstallationReconciler struct {
 	client.Client
-	Log    logr.Logger
-	Scheme *runtime.Scheme
+	Log           logr.Logger
+	Scheme        *runtime.Scheme
+	RefreshBefore time.Duration
 }
 
 // +kubebuilder:rbac:groups=ghapp.tsuzu.dev,resources=installations,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=ghapp.tsuzu.dev,resources=installations/status,verbs=get;update;patch
 
-func (r *InstallationReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
-	_ = context.Background()
-	_ = r.Log.WithValues("installation", req.NamespacedName)
+func (r *InstallationReconciler) Reconcile(req ctrl.Request) (res ctrl.Result, err error) {
+	ctx := context.Background()
+	log := r.Log.WithValues("installation", req.NamespacedName)
 
-	// your logic here
+	ins := &ghappv1alpha1.Installation{}
+	if err := r.Get(ctx, req.NamespacedName, ins); err != nil {
+		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
 
-	return ctrl.Result{}, nil
+	defer func() {
+		if err != nil {
+			ins.Status.Ready = false
+			ins.Status.Message = err.Error()
+
+			log.Error(err, "failed to update status")
+			if err := r.Client.Status().Update(ctx, ins); err != nil {
+				log.Error(err, "failed to update status", "status", ins.Status.Message)
+
+				res.Requeue = true
+			}
+		}
+	}()
+
+	insclient := installations.Client{
+		Client:        r.Client,
+		Installation:  ins,
+		RefreshBefore: r.RefreshBefore,
+	}
+
+	status, generated, expiredAt, err := insclient.Run(ctx)
+
+	if err != nil {
+		return ctrl.Result{
+			Requeue: true,
+		}, xerrors.Errorf("failed to check the current secret: %w", err)
+	}
+
+	switch status {
+	case installations.Undesirable:
+		if err := r.Update(ctx, generated); err != nil {
+			return ctrl.Result{
+				Requeue: true,
+			}, xerrors.Errorf("failed to update status: %w", err)
+		}
+	case installations.NotExisting:
+		if err := r.Create(ctx, generated); err != nil {
+			return ctrl.Result{
+				Requeue: true,
+			}, xerrors.Errorf("failed to update status: %w", err)
+		}
+	case installations.Desired:
+		// do nothing
+	}
+
+	ins.Status.Ready = true
+	ins.Status.Secret = generated.Name
+	ins.Status.Secret = ins.Name
+
+	if err := r.Client.Status().Update(ctx, ins); err != nil {
+		return ctrl.Result{
+			Requeue: true,
+		}, xerrors.Errorf("failed to update status: %w", err)
+	}
+
+	return ctrl.Result{
+		Requeue:      true,
+		RequeueAfter: expiredAt.Add(-r.RefreshBefore).Sub(time.Now()),
+	}, nil
 }
 
 func (r *InstallationReconciler) SetupWithManager(mgr ctrl.Manager) error {

@@ -37,7 +37,8 @@ spec:
             description: ClusterGitHubAppSpec defines the desired state of ClusterGitHubApp
             properties:
               appID:
-                type: string
+                format: int64
+                type: integer
               privateKeySecretRef:
                 properties:
                   key:
