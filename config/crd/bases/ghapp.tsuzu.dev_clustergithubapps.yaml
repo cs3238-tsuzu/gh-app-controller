@@ -37,9 +37,12 @@ spec:
             description: ClusterGitHubAppSpec defines the desired state of ClusterGitHubApp
             properties:
               appID:
+                description: AppID is the id of GitHub App
                 format: int64
                 type: integer
               privateKeySecretRef:
+                description: PrivateKeySecretRef is the reference for the secret of
+                  GitHub App's private key
                 properties:
                   key:
                     type: string
@@ -50,11 +53,11 @@ spec:
                 - name
                 type: object
               url:
+                description: URL is the base url for GitHub
                 type: string
             required:
             - appID
             - privateKeySecretRef
-            - url
             type: object
           status:
             description: ClusterGitHubAppStatus defines the observed state of ClusterGitHubApp

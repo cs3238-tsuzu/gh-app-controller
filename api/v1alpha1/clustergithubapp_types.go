@@ -40,8 +40,14 @@ type ClusterGitHubAppSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	URL                 string              `json:"url"`
-	AppID               int64               `json:"appID"`
+	// URL is the base url for GitHub
+	// +kubebuilder:validation:Optional
+	URL string `json:"url"`
+
+	// AppID is the id of GitHub App
+	AppID int64 `json:"appID"`
+
+	// PrivateKeySecretRef is the reference for the secret of GitHub App's private key
 	PrivateKeySecretRef PrivateKeySecretRef `json:"privateKeySecretRef"`
 }
 
