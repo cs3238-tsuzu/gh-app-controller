@@ -85,9 +85,23 @@ func (c *Client) getGitHubAppClient(ctx context.Context, gha ghatypes.GitHubAppI
 		return nil, xerrors.Errorf("failed to initialize apps transport: %w", err)
 	}
 
-	ghclient = github.NewClient(&http.Client{
-		Transport: tr,
-	})
+	url := gha.GetURL()
+	if url == "" {
+		ghclient = github.NewClient(&http.Client{
+			Transport: tr,
+		})
+	} else {
+		ghclient, err = github.NewEnterpriseClient(
+			url, url,
+			&http.Client{
+				Transport: tr,
+			},
+		)
+
+		if err != nil {
+			return nil, xerrors.Errorf("failed to parse GitHub url: %w", err)
+		}
+	}
 
 	return ghclient, nil
 }
