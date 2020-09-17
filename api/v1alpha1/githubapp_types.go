@@ -17,21 +17,14 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"context"
-	"os"
-
-	"github.com/modoki-paas/ghapp-controller/pkg/ghatypes"
-	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// ClusterGitHubAppSpec defines the desired state of ClusterGitHubApp
-type ClusterGitHubAppSpec struct {
+// GitHubAppSpec defines the desired state of GitHubApp
+type GitHubAppSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
@@ -46,8 +39,8 @@ type ClusterGitHubAppSpec struct {
 	PrivateKeySecretRef PrivateKeySecretRef `json:"privateKeySecretRef"`
 }
 
-// ClusterGitHubAppStatus defines the observed state of ClusterGitHubApp
-type ClusterGitHubAppStatus struct {
+// GitHubAppStatus defines the observed state of GitHubApp
+type GitHubAppStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 }
@@ -55,60 +48,24 @@ type ClusterGitHubAppStatus struct {
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 
-// ClusterGitHubApp is the Schema for the clustergithubapps API
-// +kubebuilder:resource:path=clustergithubapps,scope=Cluster
-type ClusterGitHubApp struct {
+// GitHubApp is the Schema for the githubapps API
+type GitHubApp struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   ClusterGitHubAppSpec   `json:"spec,omitempty"`
-	Status ClusterGitHubAppStatus `json:"status,omitempty"`
+	Spec   GitHubAppSpec   `json:"spec,omitempty"`
+	Status GitHubAppStatus `json:"status,omitempty"`
 }
 
 // +kubebuilder:object:root=true
 
-// ClusterGitHubAppList contains a list of ClusterGitHubApp
-type ClusterGitHubAppList struct {
+// GitHubAppList contains a list of GitHubApp
+type GitHubAppList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []ClusterGitHubApp `json:"items"`
+	Items           []GitHubApp `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&ClusterGitHubApp{}, &ClusterGitHubAppList{})
-}
-
-var _ ghatypes.GitHubAppInterface = &ClusterGitHubApp{}
-
-func (a *ClusterGitHubApp) GetURL() string {
-	return a.Spec.URL
-}
-
-func (a *ClusterGitHubApp) GetAppID() int64 {
-	return a.Spec.AppID
-}
-
-func (a *ClusterGitHubApp) GetPrivateKey(ctx context.Context, c client.Client) ([]byte, error) {
-	secret := &corev1.Secret{}
-
-	err := c.Get(ctx, client.ObjectKey{
-		Name:      a.Spec.PrivateKeySecretRef.Name,
-		Namespace: os.Getenv("CONTROLLER_NAMESPACE"),
-	}, secret)
-
-	if errors.IsNotFound(err) {
-		return nil, ghatypes.ErrSecretNotFound
-	}
-
-	if err != nil {
-		return nil, err
-	}
-
-	data, ok := secret.Data[a.Spec.PrivateKeySecretRef.Key]
-
-	if !ok {
-		return nil, ghatypes.ErrKeyNotFound
-	}
-
-	return data, nil
+	SchemeBuilder.Register(&GitHubApp{}, &GitHubAppList{})
 }

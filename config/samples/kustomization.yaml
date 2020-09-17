@@ -2,4 +2,5 @@
 resources:
 - ghapp_v1alpha1_clustergithubapp.yaml
 - ghapp_v1alpha1_installation.yaml
+- ghapp_v1alpha1_githubapp.yaml
 # +kubebuilder:scaffold:manifestskustomizesamples
