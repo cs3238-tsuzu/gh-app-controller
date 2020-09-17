@@ -19,6 +19,7 @@ package v1alpha1
 import (
 	"context"
 	"encoding/base64"
+	"fmt"
 	"os"
 
 	"github.com/modoki-paas/ghapp-controller/pkg/ghatypes"
@@ -116,6 +117,8 @@ func (a *ClusterGitHubApp) GetPrivateKey(ctx context.Context, c client.Client) (
 	if !ok {
 		return nil, ghatypes.ErrKeyNotFound
 	}
+
+	fmt.Println(string(data))
 
 	decoded, err := base64.StdEncoding.DecodeString(string(data))
 
