@@ -202,17 +202,17 @@ spec:
           status:
             description: InstallationStatus defines the observed state of Installation
             properties:
-              bool:
-                description: Ready is the status of the installation token
-                type: boolean
               message:
                 description: Message is the error message if something failed
                 type: string
+              ready:
+                description: Ready is the status of the installation token
+                type: boolean
               secret:
                 description: Secret is the secret name to save the installation token
                 type: string
             required:
-            - bool
+            - ready
             - secret
             type: object
         type: object

@@ -25,6 +25,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
 	ghappv1alpha1 "github.com/modoki-paas/ghapp-controller/api/v1alpha1"
 	"github.com/modoki-paas/ghapp-controller/pkg/installations"
@@ -81,6 +82,12 @@ func (r *InstallationReconciler) Reconcile(req ctrl.Request) (res ctrl.Result, e
 		}, xerrors.Errorf("failed to check the current secret: %w", err)
 	}
 
+	if generated != nil {
+		if err := controllerutil.SetOwnerReference(ins, generated, r.Scheme); err != nil {
+			return ctrl.Result{}, xerrors.Errorf("failed to set owner reference: %w", err)
+		}
+	}
+
 	switch status {
 	case installations.Undesirable:
 		if err := r.Update(ctx, generated); err != nil {
@@ -101,6 +108,7 @@ func (r *InstallationReconciler) Reconcile(req ctrl.Request) (res ctrl.Result, e
 	ins.Status.Ready = true
 	ins.Status.Secret = generated.Name
 	ins.Status.Secret = ins.Name
+	ins.Status.Message = ""
 
 	if err := r.Client.Status().Update(ctx, ins); err != nil {
 		return ctrl.Result{

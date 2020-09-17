@@ -125,7 +125,7 @@ type InstallationStatus struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Ready is the status of the installation token
-	Ready bool `json:"bool"`
+	Ready bool `json:"ready"`
 
 	// Secret is the secret name to save the installation token
 	Secret string `json:"secret"`
