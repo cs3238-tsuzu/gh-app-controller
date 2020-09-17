@@ -18,11 +18,9 @@ package v1alpha1
 
 import (
 	"context"
-	"encoding/base64"
 	"os"
 
 	"github.com/modoki-paas/ghapp-controller/pkg/ghatypes"
-	"golang.org/x/xerrors"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -117,11 +115,5 @@ func (a *ClusterGitHubApp) GetPrivateKey(ctx context.Context, c client.Client) (
 		return nil, ghatypes.ErrKeyNotFound
 	}
 
-	decoded, err := base64.StdEncoding.DecodeString(string(data))
-
-	if err != nil {
-		return nil, xerrors.Errorf("failed to parse base64-encoded key: %w", err)
-	}
-
-	return decoded, nil
+	return data, nil
 }

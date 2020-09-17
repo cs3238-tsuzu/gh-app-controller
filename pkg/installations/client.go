@@ -173,6 +173,10 @@ func (c *Client) generate(ctx context.Context, gha ghatypes.GitHubAppInterface, 
 
 	generated.Annotations[SecretExpiredAtAnnotationKey] = token.GetExpiresAt().Format(time.RFC3339)
 	generated.Annotations[SecretHashAnnotationKey] = hash
+
+	if generated.StringData == nil {
+		generated.StringData = map[string]string{}
+	}
 	generated.StringData[c.Installation.Spec.Key] = token.GetToken()
 
 	return &generated

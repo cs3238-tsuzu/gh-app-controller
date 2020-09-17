@@ -20,4 +20,4 @@ jobs:
         dockerfile: Dockerfile
         tag_with_ref: true
         tag_with_sha: true
-        push: ${{ github.event_name == 'push' }}
+        push: true
