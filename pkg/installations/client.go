@@ -48,10 +48,10 @@ func (c *Client) getGitHubApp(ctx context.Context) (ghatypes.GitHubAppInterface,
 	var err error
 
 	ref := c.Installation.Spec.AppRef
-	switch ref.Kind {
-	case "ClusterGitHubApp":
-		switch ref.APIVersion {
-		case "v1alpha1":
+	switch ref.APIVersion {
+	case v1alpha1.GroupVersion.String(), "":
+		switch ref.Kind {
+		case "ClusterGitHubApp":
 			cgha := &v1alpha1.ClusterGitHubApp{}
 			err = c.Client.Get(ctx, client.ObjectKey{
 				Name: ref.Name,
