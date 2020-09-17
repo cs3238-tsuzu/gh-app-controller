@@ -42,6 +42,7 @@ type InstallationReconciler struct {
 // +kubebuilder:rbac:groups=ghapp.tsuzu.dev,resources=installations/status,verbs=get;update;patch
 // +kubebuilder:rbac:groups=ghapp.tsuzu.dev,resources=clustergithubapps,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=ghapp.tsuzu.dev,resources=clustergithubapps/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=core,resources=secrets,verbs=get;list
 
 func (r *InstallationReconciler) Reconcile(req ctrl.Request) (res ctrl.Result, err error) {
 	ctx := context.Background()

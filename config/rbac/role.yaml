@@ -7,6 +7,33 @@ metadata:
   name: manager-role
 rules:
 - apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - ghapp.tsuzu.dev
+  resources:
+  - clustergithubapps
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ghapp.tsuzu.dev
+  resources:
+  - clustergithubapps/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
   - ghapp.tsuzu.dev
   resources:
   - installations
