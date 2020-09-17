@@ -17,7 +17,13 @@ limitations under the License.
 package v1alpha1
 
 import (
+	"context"
+
+	"github.com/modoki-paas/ghapp-controller/pkg/ghatypes"
+	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
@@ -68,4 +74,39 @@ type GitHubAppList struct {
 
 func init() {
 	SchemeBuilder.Register(&GitHubApp{}, &GitHubAppList{})
+}
+
+var _ ghatypes.GitHubAppInterface = &GitHubApp{}
+
+func (a *GitHubApp) GetURL() string {
+	return a.Spec.URL
+}
+
+func (a *GitHubApp) GetAppID() int64 {
+	return a.Spec.AppID
+}
+
+func (a *GitHubApp) GetPrivateKey(ctx context.Context, c client.Client) ([]byte, error) {
+	secret := &corev1.Secret{}
+
+	err := c.Get(ctx, client.ObjectKey{
+		Name:      a.Spec.PrivateKeySecretRef.Name,
+		Namespace: a.Namespace,
+	}, secret)
+
+	if errors.IsNotFound(err) {
+		return nil, ghatypes.ErrSecretNotFound
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	data, ok := secret.Data[a.Spec.PrivateKeySecretRef.Key]
+
+	if !ok {
+		return nil, ghatypes.ErrKeyNotFound
+	}
+
+	return data, nil
 }

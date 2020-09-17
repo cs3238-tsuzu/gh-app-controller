@@ -52,12 +52,20 @@ func (c *Client) getGitHubApp(ctx context.Context) (ghatypes.GitHubAppInterface,
 	case v1alpha1.GroupVersion.String(), "":
 		switch ref.Kind {
 		case "ClusterGitHubApp":
-			cgha := &v1alpha1.ClusterGitHubApp{}
+			app := &v1alpha1.ClusterGitHubApp{}
 			err = c.Client.Get(ctx, client.ObjectKey{
 				Name: ref.Name,
-			}, cgha)
+			}, app)
 
-			gha = cgha
+			gha = app
+		case "GitHubApp":
+			app := &v1alpha1.GitHubApp{}
+			err = c.Client.Get(ctx, client.ObjectKey{
+				Name:      ref.Name,
+				Namespace: c.Installation.Namespace,
+			}, app)
+
+			gha = app
 		default:
 			err = errUnknownResousrce
 		}
