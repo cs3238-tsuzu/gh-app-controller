@@ -8,7 +8,6 @@ import (
 
 	"github.com/modoki-paas/ghapp-controller/api/v1alpha1"
 	"github.com/modoki-paas/ghapp-controller/pkg/ghatypes"
-	corev1 "k8s.io/api/core/v1"
 )
 
 type installationTokenClaims struct {
@@ -19,7 +18,7 @@ type installationTokenClaims struct {
 	RepositoryIDs  []int64
 	Permissions    *v1alpha1.InstallationPermissions
 	ExpiresAt      int64
-	Template       corev1.Secret
+	Template       v1alpha1.SecretTemplateSpec
 }
 
 func getInstallationTokenHash(

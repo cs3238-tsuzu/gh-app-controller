@@ -41,6 +41,26 @@ rules:
 - apiGroups:
   - ghapp.tsuzu.dev
   resources:
+  - githubapps
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ghapp.tsuzu.dev
+  resources:
+  - githubapps/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - ghapp.tsuzu.dev
+  resources:
   - installations
   verbs:
   - create

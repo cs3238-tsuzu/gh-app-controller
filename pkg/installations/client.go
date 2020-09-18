@@ -12,6 +12,7 @@ import (
 	"golang.org/x/xerrors"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -162,11 +163,20 @@ func (c *Client) hasDesiredSecret(ctx context.Context, gha ghatypes.GitHubAppInt
 }
 
 func (c *Client) generate(ctx context.Context, gha ghatypes.GitHubAppInterface, token *github.InstallationToken, privateKey []byte) *corev1.Secret {
-	generated := c.Installation.Spec.Template
+	tmpl := c.Installation.Spec.Template
 
-	generated.Name = c.Installation.Name
-	generated.Namespace = c.Installation.Namespace
-	generated.GenerateName = ""
+	generated := &corev1.Secret{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:        c.Installation.Name,
+			Namespace:   c.Installation.Namespace,
+			Labels:      tmpl.Labels,
+			Annotations: tmpl.Annotations,
+		},
+		Immutable:  tmpl.Immutable,
+		Data:       tmpl.Data,
+		StringData: tmpl.StringData,
+		Type:       tmpl.Type,
+	}
 
 	if generated.Annotations == nil {
 		generated.Annotations = map[string]string{}
@@ -187,7 +197,7 @@ func (c *Client) generate(ctx context.Context, gha ghatypes.GitHubAppInterface, 
 	}
 	generated.StringData[c.Installation.Spec.Key] = token.GetToken()
 
-	return &generated
+	return generated
 }
 
 func (c *Client) Run(ctx context.Context) (SecretStatus, *corev1.Secret, *time.Time, error) {

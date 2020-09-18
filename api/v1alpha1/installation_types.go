@@ -93,6 +93,57 @@ func (p *InstallationPermissions) GetGitHubPermissions() *github.InstallationPer
 	}
 }
 
+type MetadataSpec struct {
+	// Map of string keys and values that can be used to organize and categorize
+	// (scope and select) objects. May match selectors of replication controllers
+	// and services.
+	// More info: http://kubernetes.io/docs/user-guide/labels
+	// +kubebuilder:validation:Optional
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Annotations is an unstructured key value map stored with a resource that may be
+	// set by external tools to store and retrieve arbitrary metadata. They are not
+	// queryable and should be preserved when modifying objects.
+	// More info: http://kubernetes.io/docs/user-guide/annotations
+	// +kubebuilder:validation:Optional
+	Annotations map[string]string `json:"annotations,omitempty"`
+}
+
+// SecretTemplateSpec is the template to generate secret with the installation token
+type SecretTemplateSpec struct {
+	// Standard object's metadata.
+	// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+	// +kubebuilder:validation:Optional
+	MetadataSpec `json:"metadata,omitempty"`
+
+	// Immutable, if set to true, ensures that data stored in the Secret cannot
+	// be updated (only object metadata can be modified).
+	// If not set to true, the field can be modified at any time.
+	// Defaulted to nil.
+	// This is an alpha field enabled by ImmutableEphemeralVolumes feature gate.
+	// +kubebuilder:validation:Optional
+	Immutable *bool `json:"immutable,omitempty"`
+
+	// Data contains the secret data. Each key must consist of alphanumeric
+	// characters, '-', '_' or '.'. The serialized form of the secret data is a
+	// base64 encoded string, representing the arbitrary (possibly non-string)
+	// data value here. Described in https://tools.ietf.org/html/rfc4648#section-4
+	// +kubebuilder:validation:Optional
+	Data map[string][]byte `json:"data,omitempty"`
+
+	// stringData allows specifying non-binary secret data in string form.
+	// It is provided as a write-only convenience method.
+	// All keys and values are merged into the data field on write, overwriting any existing values.
+	// It is never output when reading from the API.
+	// +k8s:conversion-gen=false
+	// +kubebuilder:validation:Optional
+	StringData map[string]string `json:"stringData,omitempty"`
+
+	// Used to facilitate programmatic handling of secret data.
+	// +kubebuilder:validation:Optional
+	Type corev1.SecretType `json:"type,omitempty"`
+}
+
 // InstallationSpec defines the desired state of GitHub installation
 type InstallationSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
@@ -116,7 +167,7 @@ type InstallationSpec struct {
 	Key string `json:"key"`
 
 	// Template is the template to generate secret with the installation token
-	Template corev1.Secret `json:"template"`
+	Template SecretTemplateSpec `json:"template"`
 }
 
 // InstallationStatus defines the observed state of Installation
