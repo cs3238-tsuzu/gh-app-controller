@@ -29,6 +29,7 @@ import (
 
 	ghappv1alpha1 "github.com/modoki-paas/ghapp-controller/api/v1alpha1"
 	"github.com/modoki-paas/ghapp-controller/pkg/installations"
+	corev1 "k8s.io/api/core/v1"
 )
 
 // InstallationReconciler reconciles a Installation object
@@ -126,6 +127,7 @@ func (r *InstallationReconciler) Reconcile(req ctrl.Request) (res ctrl.Result, e
 
 func (r *InstallationReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
+		Owns(&corev1.Secret{}).
 		For(&ghappv1alpha1.Installation{}).
 		Complete(r)
 }
