@@ -52,6 +52,11 @@ func (r *InstallationReconciler) Reconcile(req ctrl.Request) (res ctrl.Result, e
 	ctx := context.Background()
 	log := r.Log.WithValues("installation", req.NamespacedName)
 
+	log.Info("Start reconciliation")
+	defer func() {
+		log.Info("will be requeued", "after", res.RequeueAfter)
+	}()
+
 	ins := &ghappv1alpha1.Installation{}
 	if err := r.Get(ctx, req.NamespacedName, ins); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
@@ -118,6 +123,8 @@ func (r *InstallationReconciler) Reconcile(req ctrl.Request) (res ctrl.Result, e
 			Requeue: true,
 		}, xerrors.Errorf("failed to update status: %w", err)
 	}
+
+	log.Info("successful", "expired-at", expiredAt)
 
 	return ctrl.Result{
 		Requeue:      true,
